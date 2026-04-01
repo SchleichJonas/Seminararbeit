@@ -13,6 +13,7 @@ This section will cover how to use the tools we built for our analysis
 
 ### Prerequisites
 - Python3 (Tested on `Python3.13` and `Python 3.14`)
+- Stackexchange data dump (Only mathoverflow.net.7z and math.stackexchange.com.7z was used from 2025-09-30 from the <a href="https://archive.org/details/stackexchange_20250930" title="stackexchange_20250930">Internet Archive</a>)
 
 ### Installation
 To install all necessary requirements use:
