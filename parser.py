@@ -47,25 +47,28 @@ def parse(xml_path, parquet_path):
         
     if writer:
         writer.close()
-    
-    print(f"Finished parsing")
-        
+            
 def startParsing():
-    folder_path = input("Enter the path to the folder containing your XML files:").strip('"')
-    
-    if not os.path.isdir(folder_path):
-        print("Directory does not exist")
+    dirs = [f for f in os.listdir() if not os.path.isfile(os.path.join(f))]
+    for i, dir in enumerate(dirs):
+        print(f"{i} {dir}")
+        
+    folder = input()
+    try:
+        folder = int(folder)
+    except:
         return
-
-    files = [f for f in os.listdir(folder_path) if f.lower().endswith('.xml')]
+    
+    dir = dirs[folder]
+    files = [f for f in os.listdir(dir) if f.lower().endswith('.xml')]
     
     if len(files) == 0:
         print("No XML files in directory")
         return
 
     for file_name in files:
-        full_path = os.path.join(folder_path, file_name)
+        full_path = os.path.join(dir, file_name)
         base_name = os.path.splitext(file_name)[0]
-        full_parquet_path = os.path.join(folder_path, base_name + ".parquet")
+        full_parquet_path = os.path.join(dir, base_name + ".parquet")
         
         parse(full_path, full_parquet_path)

@@ -5,51 +5,27 @@ import os
 
 con = duckdb.connect()
 
-mathoverflowFiles = ['mathoverflow/Badges.parquet', 'mathoverflow/Comments.parquet', 'mathoverflow/PostHistory.parquet',
-                     'mathoverflow/PostLinks.parquet', 'mathoverflow/Posts.parquet', 'mathoverflow/Tags.parquet',
-                     'mathoverflow/Users.parquet', 'mathoverflow/Votes.parquet']
-
-mathStackExchangeflowFiles = ['mathstackexchange/Badges.parquet', 'mathstackexchange/Comments.parquet', 'mathstackexchange/PostHistory.parquet',
-                     'mathstackexchange/PostLinks.parquet', 'mathstackexchange/Posts.parquet', 'mathstackexchange/Tags.parquet',
-                     'mathstackexchange/Users.parquet', 'mathstackexchange/Votes.parquet']
-
-mathoverflowFiles_typed = ['mathoverflow/Badges_typed.parquet', 'mathoverflow/Comments_typed.parquet', 'mathoverflow/PostHistory_typed.parquet',
-                     'mathoverflow/PostLinks_typed.parquet', 'mathoverflow/Posts_typed.parquet', 'mathoverflow/Tags_typed.parquet',
-                     'mathoverflow/Users_typed.parquet', 'mathoverflow/Votes_typed.parquet']
-
-mathStackExchangeflowFiles_typed = ['mathstackexchange/Badges_typed.parquet', 'mathstackexchange/Comments_typed.parquet', 'mathstackexchange/PostHistory_typed.parquet',
-                     'mathstackexchange/PostLinks_typed.parquet', 'mathstackexchange/Posts_typed.parquet', 'mathstackexchange/Tags_typed.parquet',
-                     'mathstackexchange/Users_typed.parquet', 'mathstackexchange/Votes_typed.parquet']
-
-
 def Describe():
+    dirs = [f for f in os.listdir() if not os.path.isfile(os.path.join(f))]
+    for i, dir in enumerate(dirs):
+        print(f"{i} {dir}")
+        
+    folder = input()
     try:
-        for file in mathoverflowFiles_typed:
-            print(f"DESCRIBE SELECT * FROM '{file}':")
-            result = con.execute(f"DESCRIBE SELECT * FROM '{file}'").fetchdf()
+        folder = int(folder)
+    except:
+        return
+    
+    dir = dirs[folder]
+    files = [f for f in os.listdir(dir) if os.path.isfile(os.path.join(dir, f)) and f.endswith(".parquet")]
+    try:
+        for file in files:
+            print(f"DESCRIBE SELECT * FROM '{dir}/{file}':")
+            result = con.execute(f"DESCRIBE SELECT * FROM '{dir}/{file}'").fetchdf()
             print(result)
     except:
-        try:
-            for file in mathoverflowFiles:
-                print(f"DESCRIBE SELECT * FROM '{file}':")
-                result = con.execute(f"DESCRIBE SELECT * FROM '{file}'").fetchdf()
-                print(result)
-        except:
-            print("You first need to cast the XML files to parquet and put them in a folder called mathoverflow in this directory")
-                   
-    try:
-        for file in mathStackExchangeflowFiles_typed:
-            print(f"DESCRIBE SELECT * FROM '{file}':")
-            result = con.execute(f"DESCRIBE SELECT * FROM '{file}'").fetchdf()
-            print(result)
-    except:
-        try:
-            for file in mathStackExchangeflowFiles:
-                print(f"DESCRIBE SELECT * FROM '{file}':")
-                result = con.execute(f"DESCRIBE SELECT * FROM '{file}'").fetchdf()
-                print(result)
-        except:
-            print("You first need to cast the XML files to parquet and put them in a folder called mathstackexchange in this directory")
+            print("ERROR")
+            return
 
 def test():
     #result = con.execute(f"SELECT * FROM 'mathoverflow/Posts_typed_complexity.parquet' limit 10").fetchdf()

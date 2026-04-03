@@ -13,8 +13,8 @@ This section will cover how to use the tools we built for our analysis
 
 ### Prerequisites
 - Python3 (Tested on `Python3.13` and `Python 3.14`)
-- Stackexchange data dump (Only mathoverflow.net.7z and math.stackexchange.com.7z was used from 2025-09-30 from the <a href="https://archive.org/details/stackexchange_20250930" title="stackexchange_20250930">Internet Archive</a>)
-- Put the XML files in a folder called mathoverflow and mathstackexchange respectively in the projects base directory so the program finds the files.
+- Stackexchange data dump (Only mathoverflow.net.7z and math.stackexchange.com.7z was used from 2025-09-30 from the <a href="https://archive.org/details/stackexchange_20250930" title="stackexchange_20250930">Internet Archive</a>, but in theory other dumps/files should work just fine)
+- Put the XML files in a subdirectory of the projects base directory so the program finds the files.
 
 ### Installation
 To install all necessary requirements use:
@@ -42,4 +42,4 @@ Please select on what you would like to do:
 - 1: To parse the XML files to parquet files the first option will parse all XML files of a given directory
 - 2: You will get and SQL DESCRIBE querry for all tables. If the tables are already casted then those will be taken, otherwise the raw parquet files are taken.
 - 3: This option will convert all columns to the correct types. When creating the parquet files all columns will be of type `VARCHAR`. Therefore we need to convert them to the approapriate types to compute statistics on them.
-- 4: Computes complexity of 
+- 4: Computes complexity of a specified column
