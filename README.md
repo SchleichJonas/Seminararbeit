@@ -1,4 +1,4 @@
-# MAthoverflow and Math Steckexchange usage analysis in relation to AI
+# Mathoverflow and Math Steckexchange usage analysis in relation to AI
 
 ## General
 With our project we want to analyse the usage and overall change that might or might not have happened due to AI.
