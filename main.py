@@ -2,11 +2,12 @@ import duckdb
 from castingTables import CastToCorrectTypes
 from parser import startParsing
 import os
+from defines import IGNOREDDIRECTORIES
 
 con = duckdb.connect()
 
 def Describe():
-    dirs = [f for f in os.listdir() if not os.path.isfile(os.path.join(f))]
+    dirs = [f for f in os.listdir() if not os.path.isfile(os.path.join(f)) and not f in IGNOREDDIRECTORIES]
     for i, dir in enumerate(dirs):
         print(f"{i} {dir}")
         
@@ -35,7 +36,7 @@ def test():
         print(result[x])
     
 def calculateComplexity():
-    dirs = [f for f in os.listdir() if not os.path.isfile(os.path.join(f))]
+    dirs = [f for f in os.listdir() if not os.path.isfile(os.path.join(f)) and not f in IGNOREDDIRECTORIES]
     for i, dir in enumerate(dirs):
         print(f"{i} {dir}")
         

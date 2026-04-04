@@ -2,6 +2,7 @@ import lxml.etree as ET
 import pyarrow as pa
 import pyarrow.parquet as pq
 import os
+from defines import IGNOREDDIRECTORIES
 
 def get_schema_keys(xml_path):
     keys = set()
@@ -48,18 +49,22 @@ def parse(xml_path, parquet_path):
     if writer:
         writer.close()
             
-def startParsing():
-    dirs = [f for f in os.listdir() if not os.path.isfile(os.path.join(f))]
-    for i, dir in enumerate(dirs):
-        print(f"{i} {dir}")
+def startParsing(path = ""):
+    if(path == ""):
+        dirs = [f for f in os.listdir() if not os.path.isfile(os.path.join(f)) and not f in IGNOREDDIRECTORIES]
+        for i, dir in enumerate(dirs):
+            print(f"{i} {dir}")
+            
+        folder = input()
+        try:
+            folder = int(folder)
+        except:
+            return
         
-    folder = input()
-    try:
-        folder = int(folder)
-    except:
-        return
-    
-    dir = dirs[folder]
+        dir = dirs[folder]
+    else:
+        dir = path
+        
     files = [f for f in os.listdir(dir) if f.lower().endswith('.xml')]
     
     if len(files) == 0:

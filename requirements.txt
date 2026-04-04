@@ -3,3 +3,7 @@ pyarrow
 duckdb
 numpy
 pandas
+
+
+
+streamlit
