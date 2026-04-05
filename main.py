@@ -6,6 +6,13 @@ from defines import IGNOREDDIRECTORIES
 
 con = duckdb.connect()
 
+
+def get_connection():
+    return con
+
+def executeCustomQueryDF(query):
+    return con.execute(query)
+
 def Describe():
     dirs = [f for f in os.listdir() if not os.path.isfile(os.path.join(f)) and not f in IGNOREDDIRECTORIES]
     for i, dir in enumerate(dirs):

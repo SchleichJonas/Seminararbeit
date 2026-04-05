@@ -1,7 +1,7 @@
 import os
 from defines import IGNOREDDIRECTORIES
-    
-def CastToCorrectTypes(con):
+
+def selection():
     print("Enter directory you want to cast")
     dirs = [f for f in os.listdir() if not os.path.isfile(os.path.join(f)) and not f in IGNOREDDIRECTORIES]
     for i, dir in enumerate(dirs):
@@ -19,13 +19,22 @@ def CastToCorrectTypes(con):
     for file in files:
         if "typed" in file:
             files_exist = True
-    
+
     if files_exist:
         print("There are already typed files in this directory, do you want to redo it? y/n")
         if(input() == "n"):
+            return "",[]
+        
+    return dir
+    
+def CastToCorrectTypes(con, gui=False, path = "", files = []):
+    dir = ""
+    if(gui == False):
+        dir = selection()
+        if(dir == ""):
             return
 
-    if os.path.isfile(f"{dir}/Badges.parquet"):
+    if((os.path.isfile(f"{dir}/Badges.parquet") and path == "") or (path != "" and "Badges.parquet" in files)):
         con.execute(f"""
         COPY (
             SELECT 
@@ -39,7 +48,7 @@ def CastToCorrectTypes(con):
         ) TO '{dir}/Badges_typed.parquet' (FORMAT PARQUET);
         """)
     
-    if os.path.isfile(f"{dir}/Comments.parquet"):
+    if((os.path.isfile(f"{dir}/Comments.parquet") and path == "") or (path != "" and "Comments.parquet" in files)):
         con.execute(f"""
         COPY (
             SELECT 
@@ -55,7 +64,7 @@ def CastToCorrectTypes(con):
         ) TO '{dir}/Comments_typed.parquet' (FORMAT PARQUET);
         """)
     
-    if os.path.isfile(f"{dir}/PostHistory.parquet"):
+    if((os.path.isfile(f"{dir}/PostHistory.parquet") and path == "") or (path != "" and "PostHistory.parquet" in files)):
         con.execute(f"""
         COPY (
             SELECT 
@@ -73,7 +82,7 @@ def CastToCorrectTypes(con):
         ) TO '{dir}/PostHistory_typed.parquet' (FORMAT PARQUET);
         """)
     
-    if os.path.isfile(f"{dir}/PostLinks.parquet"):
+    if((os.path.isfile(f"{dir}/PostLinks.parquet") and path == "") or (path != "" and "PostLinks.parquet" in files)):
         con.execute(f"""
         COPY (
             SELECT 
@@ -86,7 +95,7 @@ def CastToCorrectTypes(con):
         ) TO '{dir}/PostLinks_typed.parquet' (FORMAT PARQUET);
         """)
     
-    if os.path.isfile(f"{dir}/Posts.parquet"):
+    if((os.path.isfile(f"{dir}/Posts.parquet") and path == "") or (path != "" and "Posts.parquet" in files)):
         con.execute(f"""
         COPY (
             SELECT 
@@ -115,7 +124,7 @@ def CastToCorrectTypes(con):
         ) TO '{dir}/Posts_typed.parquet' (FORMAT PARQUET);
         """)
     
-    if os.path.isfile(f"{dir}/Tags.parquet"):
+    if((os.path.isfile(f"{dir}/Tags.parquet") and path == "") or (path != "" and "Tags.parquet" in files)):
         con.execute(f"""
         COPY (
             SELECT 
@@ -128,7 +137,7 @@ def CastToCorrectTypes(con):
         ) TO '{dir}/Tags_typed.parquet' (FORMAT PARQUET);
         """)
     
-    if os.path.isfile(f"{dir}/Users.parquet"):
+    if((os.path.isfile(f"{dir}/Users.parquet") and path == "") or (path != "" and "Users.parquet" in files)):
         con.execute(f"""
         COPY (
             SELECT 
@@ -148,7 +157,7 @@ def CastToCorrectTypes(con):
         ) TO '{dir}/Users_typed.parquet' (FORMAT PARQUET);
         """)
     
-    if os.path.isfile(f"{dir}/Votes.parquet"):
+    if((os.path.isfile(f"{dir}/Votes.parquet") and path == "") or (path != "" and "Votes.parquet" in files)):
         con.execute(f"""
         COPY (
             SELECT 
