@@ -54,5 +54,5 @@ def describeSite():
                     full_df = get_data(file_path)
                     st.dataframe(full_df.head(limit))
 
-                except Exception as e::
+                except Exception as e:
                     st.error(f"Failed to describe table!")
