@@ -6,6 +6,9 @@ from backend.complexity import calculateComplexity
 from shared.db import executeCustomQueryDF
 
 def complexitySite():
+    """
+    Provides the webpage to compute complexity of a table
+    """  
     if "path" not in st.session_state:
         st.session_state.path = ""
     if "col" not in st.session_state:

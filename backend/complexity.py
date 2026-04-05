@@ -3,6 +3,15 @@ from shared.db import get_connection
 from shared.defines import IGNOREDDIRECTORIES
 
 def calculateComplexity(gui = False, path = "", file = "", col = ""):
+    """
+    Calculates different complexity score of a column for a specific table
+
+    Args:
+        gui (bool, optional): Decides wheter the interface it GUI or command line. Defaults to False.
+        path (str, optional): path to the directory containing parquet files, only used in GUI mode. Defaults to "".
+        file (str, optional): path to the file the complexity is calculated of, only used in GUI mode. Defaults to "".
+        col (str, optional): column to be used to compute the complexity, only used in GUI mode. Defaults to "".
+    """    
     con = get_connection()
     action = "y"
     exists = False

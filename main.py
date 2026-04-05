@@ -5,6 +5,9 @@ from backend.describe import describeTables
 
 
 def main():
+    """
+    This executes the command line interface providing a menu to execute all necessary actions.
+    """
     while True:
         print("Please select on what you would like to do:")
         print("0 Exit")

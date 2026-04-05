@@ -6,6 +6,9 @@ from shared.db import executeCustomQueryDF
 
 
 def describeSite():
+    """
+    Provides the webpage for giving a small table overview
+    """  
     if "path" not in st.session_state:
         st.session_state.path = ""
     if "file" not in st.session_state:

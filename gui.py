@@ -6,6 +6,9 @@ from frontend.complexityUI import complexitySite
 
 
 def main():
+    """
+    This launches the UI which is a local web server and opens it in a browser.
+    """
     st.set_page_config(page_title="Stack exchange analyzer", layout="wide")
 
     st.sidebar.title("Actions")

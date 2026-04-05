@@ -6,6 +6,9 @@ from backend.parser import startParsing
 
 
 def parserSite():
+    """
+    Provides the webpage to parse XML file to parquet files
+    """  
     if "path" not in st.session_state:
         st.session_state.path = ""
     if st.button("Select folder"):

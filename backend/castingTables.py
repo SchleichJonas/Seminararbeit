@@ -3,6 +3,12 @@ from shared.defines import IGNOREDDIRECTORIES
 from shared.db import get_connection
 
 def selection():
+    """
+    Provides the command line interface to select the tables to parse to its correct types
+
+    Returns:
+        string: directory of the parquet files
+    """    
     print("Enter directory you want to cast")
     dirs = [f for f in os.listdir() if not os.path.isfile(os.path.join(f)) and not f in IGNOREDDIRECTORIES]
     for i, dir in enumerate(dirs):
@@ -29,6 +35,14 @@ def selection():
     return dir
     
 def CastToCorrectTypes(gui=False, path = "", files = []):
+    """
+    Casts the columns of tables from a directory to its correct types
+
+    Args:
+        gui (bool, optional): Decides wheter the interface it GUI or command line. Defaults to False.
+        path (str, optional): path of the directory, only used in GUI mode. Defaults to "".
+        files (list, optional): files to cast to its correct types, only used in GUI mode. Defaults to [].
+    """    
     con = get_connection()
     dir = ""
     if(gui == False):

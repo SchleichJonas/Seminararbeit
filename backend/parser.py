@@ -5,6 +5,15 @@ import os
 from shared.defines import IGNOREDDIRECTORIES
 
 def get_schema_keys(xml_path):
+    """
+    detects the schema of the XML file
+
+    Args:
+        xml_path (_type_): path to the xml file
+
+    Returns:
+        list: all XML keys
+    """    
     keys = set()
     context = ET.iterparse(xml_path, events=('end',), tag='row')
     
@@ -16,7 +25,14 @@ def get_schema_keys(xml_path):
             
     return list(keys)
 
-def parse(xml_path, parquet_path):    
+def parse(xml_path, parquet_path):  
+    """
+    Parses the given XML file to parquet
+
+    Args:
+        xml_path (_type_): path to the XML file
+        parquet_path (_type_): path to the parsed file
+    """      
     all_keys = get_schema_keys(xml_path)
     chunk_size = 100000 
     records = []
@@ -50,6 +66,12 @@ def parse(xml_path, parquet_path):
         writer.close()
             
 def startParsing(path = ""):
+    """
+    Prepares the parsing function
+
+    Args:
+        path (str, optional): path to XML files, only used in GUI mode. Defaults to "".
+    """    
     if(path == ""):
         dirs = [f for f in os.listdir() if not os.path.isfile(os.path.join(f)) and not f in IGNOREDDIRECTORIES]
         for i, dir in enumerate(dirs):

@@ -7,6 +7,9 @@ from shared.db import get_connection
 
 
 def castingTablesSite():
+    """
+    Provides the webpage for casting tables
+    """    
     st.warning("This will create new '_typed.parquet' files.")
     if "path" not in st.session_state:
         st.session_state.path = ""
