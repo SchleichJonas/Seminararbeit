@@ -3,7 +3,7 @@
 **Work In Progress!** This project is far from finished. It may contain bugs, might crash, and the codebase will likely receive complete overhauls. This is a working repository for a university seminar paper. Please keep this in mind! Thank you.
 
 ## General
-With our project we want to analyse the usage and overall change that might or might not have happened due to AI.
+With our project we want to analyse the usage and overall change that might or might not have happened due to AI in the stack exchange network.
 Our goal is to determine if the release of popular generative AI like ChatGPT, Gemini or similar had a significant impact on those platforms.
 Further we want to find out if a certain release of an AI like ChatGPT2 for example had a bigger impact than the initial release,
 because there might have been substantial improvements to its capabilities. In our research we also want to determine the difficulty
@@ -14,7 +14,7 @@ but we will imploy multiple techniques like question length, number of fomulars,
 This section will cover how to use the tools we built for our analysis
 
 ### Prerequisites
-- Python3.10+ (Tested on `Python3.13` and `Python 3.14`)
+- Python3 (Tested on `Python3.13` and `Python 3.14`)
 - Stackexchange data dump (Only mathoverflow.net.7z and math.stackexchange.com.7z was used from 2025-09-30 from the <a href="https://archive.org/details/stackexchange_20250930" title="stackexchange_20250930">Internet Archive</a>, but in theory other dumps/files should work just fine)
 - Put the XML files in a subdirectory of the projects base directory so the program finds the files.
 

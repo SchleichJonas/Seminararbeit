@@ -17,19 +17,18 @@ def main():
         print("4 Calculate complexity of a file")
         
         action = input()
-        match action:
-            case "0":
-                return
-            case "1":
-                startParsing()
-            case "2":
-                describeTables()
-            case "3":
-                CastToCorrectTypes()
-            case "4":
-                calculateComplexity()
-            case _:
-                print("Invalid input")
+        if(action == "0"):
+            return
+        elif(action == "1"):
+            startParsing()
+        elif(action == "2"):
+            describeTables()
+        elif(action == "3"):
+            CastToCorrectTypes()
+        if(action == "4"):
+            calculateComplexity()
+        else:
+            print("Invalid input")
 
 if __name__ == "__main__":
     main()
