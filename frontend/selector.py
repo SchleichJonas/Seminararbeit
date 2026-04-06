@@ -1,9 +1,6 @@
 import sys
 import subprocess
 import streamlit as st
-import tkinter as tk
-from tkinter import filedialog
-import os
 
 
 def selectFolder():
@@ -24,3 +21,11 @@ print(path)
             )
     path = result.stdout.strip()
     return path
+
+
+def selectboxWrapper(text, items, default):
+    try:
+        result = st.selectbox(f"{text}:", items, index=items.index(default))
+    except Exception as e:
+        result = st.selectbox(f"{text}:", items)
+    return result

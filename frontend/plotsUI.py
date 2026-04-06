@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import filedialog
 import os
 from shared.db import executeCustomQueryDF
-from frontend.selector import selectFolder
+from frontend.selector import selectFolder, selectboxWrapper
 import datetime
 import plotly.express as px
 from shared.defines import IMPORTANTDATES
@@ -42,10 +42,7 @@ def plotsSite():
             st.write("Path error")
             
         if(len(files) > 0):
-            try:
-                st.session_state.file = st.selectbox("Select the table you want to plot something of:", files, index=files.index(st.session_state.file))
-            except Exception as e:
-                st.session_state.file = st.selectbox("Select the table you want to plot something of:", files)
+            st.session_state.file = selectboxWrapper("Select the table you want to plot something of:", files, st.session_state.file)
                 
         if(st.session_state.file != ""):
             try:
@@ -53,7 +50,7 @@ def plotsSite():
                 file_path = os.path.join(st.session_state.path, st.session_state.file)
                 queries = [f"SELECT CAST(CreationDate AS DATE) AS PostDate, COUNT(*) AS PostCount FROM '{file_path}' WHERE PostTypeId = 1 AND CreationDate >= '{start_date}' AND CreationDate <= '{end_date}' GROUP BY PostDate ORDER BY PostDate",
                            f"SELECT CAST(CreationDate AS DATE) AS PostDate, COUNT(*) AS PostCount FROM '{file_path}' WHERE PostTypeId = 2 AND CreationDate >= '{start_date}' AND CreationDate <= '{end_date}' GROUP BY PostDate ORDER BY PostDate"]
-                st.session_state.query = st.selectbox("Select a predefined query:", queries)
+                st.session_state.query = selectboxWrapper("Select a predefined query:", queries, "")
                 if(st.session_state.query != ""):
                     df = executeCustomQueryDF(st.session_state.query)
                     if df.empty:
@@ -71,7 +68,7 @@ def plotsSite():
                                     line_color="red",
                                     annotation_text=event_name, 
                                     annotation_position="top right")
-                        st.plotly_chart(fig, use_container_width=True)
+                        st.plotly_chart(fig, width='stretch')
                         
                         with st.expander("Show raw data table"):
                             st.dataframe(df)

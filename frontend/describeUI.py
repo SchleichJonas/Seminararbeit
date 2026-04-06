@@ -1,9 +1,7 @@
 import streamlit as st
-import tkinter as tk
-from tkinter import filedialog
 import os
 from shared.db import executeCustomQueryDF
-from frontend.selector import selectFolder
+from frontend.selector import selectFolder, selectboxWrapper
 
 
 def describeSite():
@@ -28,10 +26,7 @@ def describeSite():
             st.write("Path error")
             
         if(len(files) > 0):
-            try:
-                st.session_state.file = st.selectbox("Select a table to describe:", files, index=files.index(st.session_state.file))
-            except Exception as e:
-                st.session_state.file = st.selectbox("Select a table to describe:", files)
+            st.session_state.file = selectboxWrapper("Select a table to describe:", files, st.session_state.file)
 
             if st.session_state.file:
                 file_path = os.path.join(st.session_state.path, st.session_state.file)
@@ -44,7 +39,7 @@ def describeSite():
 
                     limit = st.number_input("Number of rows to preview:", min_value=1, max_value=1000, value=5, step=1)
                     st.subheader(f"First {limit} rows of `{st.session_state.file}`")
-                    @st.cache_data # This tells Streamlit to remember the result
+                    @st.cache_data
                     def get_data(path):
                         return executeCustomQueryDF(f"SELECT * FROM '{path}' LIMIT 1000")
                     #preview_df = executeCustomQueryDF(f"SELECT * FROM '{file_path}' LIMIT {limit}")

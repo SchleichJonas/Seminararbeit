@@ -4,7 +4,7 @@ from tkinter import filedialog
 import os
 from backend.complexity import calculateComplexity
 from shared.db import executeCustomQueryDF
-from frontend.selector import selectFolder
+from frontend.selector import selectFolder, selectboxWrapper
 
 def complexitySite():
     """
@@ -31,18 +31,15 @@ def complexitySite():
             st.write("Path error")
             
         if(len(files) > 0):
-            try:
-                st.session_state.file = st.selectbox("Select the table you want to compute the complexity of:", files, index=files.index(st.session_state.file))
-            except Exception as e:
-                st.session_state.file = st.selectbox("Select the table you want to compute the complexity of:", files)
+            st.session_state.file = selectboxWrapper("Select the table you want to compute the complexity of:", files, st.session_state.file)
                 
         if(st.session_state.file != ""):
             try:
                 file_path = os.path.join(st.session_state.path, st.session_state.file)
                 cols = executeCustomQueryDF(f"DESCRIBE SELECT * FROM '{file_path}'")['column_name']
-                st.session_state.col = st.selectbox("Select the column for complexity compution", cols)
+                st.session_state.col = selectboxWrapper("Select the column for complexity compution", cols, "Body")
             except Exception as e:
-                st.error("Something went wrong")
+                st.error(f"Something went wrong: {e}")
                 
     if st.button("Compute complexity"):
         if(st.session_state.path != "" and len(files) > 0 and st.session_state.file != ""):
