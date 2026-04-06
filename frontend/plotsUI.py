@@ -41,7 +41,7 @@ def plotsSite():
         st.session_state.dates = st.toggle("Display release dates", True)
         
     with col_right:
-        selected_dates = st.date_input("Select Timespan:",value=[datetime.date(2022, 1, 1), datetime.date(2023, 1, 1)])
+        selected_dates = st.date_input("Select Timespan:",value=[datetime.date(2022, 1, 1), datetime.date(2023, 1, 1)], min_value=datetime.date(2009, 1, 1), max_value=datetime.date(2026, 1, 1))
         
     if(st.session_state.path != ""):
         try:
