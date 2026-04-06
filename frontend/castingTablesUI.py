@@ -1,9 +1,6 @@
 import streamlit as st
-import tkinter as tk
-from tkinter import filedialog
 import os
 from backend.castingTables import CastToCorrectTypes
-from shared.db import get_connection
 from frontend.selector import selectFolder
 
 
@@ -16,10 +13,8 @@ def castingTablesSite():
         st.session_state.path = ""
     if st.button("Select folder"):
         st.session_state.path = st.session_state.path = selectFolder()
-            
 
     st.write(f"Folder to convert:{st.session_state.path}")
-    
     
     if(st.session_state.path != ""):
         try:
@@ -28,9 +23,7 @@ def castingTablesSite():
                 st.error("Found no parquet files in this directory")
         except Exception as e:
             st.write("Path error")
-            
-    con = get_connection()
-    
+                
     if(st.session_state.path != "" and len(files) > 0):                
             with st.expander("Select files to cast", expanded=True):
                 selected_map = {}

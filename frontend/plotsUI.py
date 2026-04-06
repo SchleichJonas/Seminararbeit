@@ -36,13 +36,13 @@ def plotsSite():
     if(st.session_state.path != ""):
         try:
             files = [f for f in os.listdir(st.session_state.path) if f.lower().endswith('.parquet')]
-            if(len(files) == 0):
-                st.error("Found no parquet files in this directory")
         except Exception as e:
-            st.write("Path error")
+            st.write(f"Something went wrong: {e}")
             
         if(len(files) > 0):
             st.session_state.file = selectboxWrapper("Select the table you want to plot something of:", files, st.session_state.file)
+        else:
+            st.error("Found no parquet files in this directory")
                 
         if(st.session_state.file != ""):
             try:

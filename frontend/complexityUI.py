@@ -1,6 +1,4 @@
 import streamlit as st
-import tkinter as tk
-from tkinter import filedialog
 import os
 from backend.complexity import calculateComplexity
 from shared.db import executeCustomQueryDF
@@ -25,14 +23,14 @@ def complexitySite():
     if(st.session_state.path != ""):
         try:
             files = [f for f in os.listdir(st.session_state.path) if f.lower().endswith('.parquet') and "_typed" in f and not "_complexity" in f]
-            if(len(files) == 0):
-                st.error("Found no parquet files in this directory")
         except Exception as e:
             st.write("Path error")
             
         if(len(files) > 0):
             st.session_state.file = selectboxWrapper("Select the table you want to compute the complexity of:", files, st.session_state.file)
-                
+        else:
+            st.error("Found no parquet files in this directory")
+        
         if(st.session_state.file != ""):
             try:
                 file_path = os.path.join(st.session_state.path, st.session_state.file)

@@ -13,8 +13,6 @@ def parserSite():
     if st.button("Select folder"):
         st.session_state.path = selectFolder()
             
-            
-    
     st.write(f"Folder to parse:{st.session_state.path}")
     if(st.session_state.path != ""):
         try:
