@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import filedialog
 import os
 from shared.db import executeCustomQueryDF
+from frontend.selector import selectFolder
 
 
 def describeSite():
@@ -15,11 +16,7 @@ def describeSite():
         st.session_state.file = ""
         
     if st.button("Select folder"):
-        root = tk.Tk()
-        root.withdraw()
-        root.wm_attributes('-topmost', 1)
-        st.session_state.path = filedialog.askdirectory(master=root)
-        root.destroy()
+        st.session_state.path = st.session_state.path = selectFolder()
         
         
     if(st.session_state.path != ""):

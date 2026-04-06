@@ -4,6 +4,7 @@ from tkinter import filedialog
 import os
 from backend.complexity import calculateComplexity
 from shared.db import executeCustomQueryDF
+from frontend.selector import selectFolder
 
 def complexitySite():
     """
@@ -17,11 +18,7 @@ def complexitySite():
     st.session_state.file = ""
         
     if st.button("Select folder"):
-        root = tk.Tk()
-        root.withdraw()
-        root.wm_attributes('-topmost', 1)
-        st.session_state.path = filedialog.askdirectory(master=root)
-        root.destroy()
+        st.session_state.path = st.session_state.path = selectFolder()
         
     st.write(f"Folder to parse:{st.session_state.path}")
         

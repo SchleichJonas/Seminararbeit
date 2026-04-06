@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import filedialog
 import os
 from shared.db import executeCustomQueryDF
+from frontend.selector import selectFolder
 import datetime
 import plotly.express as px
 from shared.defines import IMPORTANTDATES
@@ -25,11 +26,7 @@ def plotsSite():
 
     with col_left:
         if st.button("Select folder"):
-            root = tk.Tk()
-            root.withdraw()
-            root.wm_attributes('-topmost', 1)
-            st.session_state.path = filedialog.askdirectory(master=root)
-            root.destroy()
+            st.session_state.path = selectFolder()
             
         st.write(f"Folder to plot files of:{st.session_state.path}")
         

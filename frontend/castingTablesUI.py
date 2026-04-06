@@ -4,6 +4,7 @@ from tkinter import filedialog
 import os
 from backend.castingTables import CastToCorrectTypes
 from shared.db import get_connection
+from frontend.selector import selectFolder
 
 
 def castingTablesSite():
@@ -14,11 +15,7 @@ def castingTablesSite():
     if "path" not in st.session_state:
         st.session_state.path = ""
     if st.button("Select folder"):
-        root = tk.Tk()
-        root.withdraw()
-        root.wm_attributes('-topmost', 1)
-        st.session_state.path = filedialog.askdirectory(master=root)
-        root.destroy()
+        st.session_state.path = st.session_state.path = selectFolder()
             
 
     st.write(f"Folder to convert:{st.session_state.path}")
