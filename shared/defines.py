@@ -26,6 +26,8 @@ GOOGLERELEASES = {"Google Bard": datetime.date(2023,3,21),          #https://en.
                   "Gemini GPT-5.4": datetime.date(2026,3,5),}       #https://en.wikipedia.org/wiki/Gemini_(language_model)#Model_versions
 
 
-COVID = {"COVID:": datetime.date(2020,3,1)}                         #WHO declares pandemic https://www.nm.org/healthbeat/medical-advances/new-therapies-and-drug-trials/covid-19-pandemic-timeline#:~:text=COVID%2D19%20Pandemic%20Timeline,what%20happened%20along%20the%20way.
+OTHER = {"Covid pandemic": datetime.date(2020,3,1),                #https://www.nm.org/healthbeat/medical-advances/new-therapies-and-drug-trials/covid-19-pandemic-timeline#:~:text=COVID%2D19%20Pandemic%20Timeline,what%20happened%20along%20the%20way.
+         "Stack Overflow acquisition": datetime.date(2021,6,2)     #https://en.wikipedia.org/wiki/Stack_Exchange
+         }                
 
-IMPORTANTDATES = OPENAIRELEASES | GOOGLERELEASES | COVID
+IMPORTANTDATES = OPENAIRELEASES | GOOGLERELEASES | OTHER
