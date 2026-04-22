@@ -49,14 +49,31 @@ def calculateComplexity(gui = False, path = "", file = "", col = ""):
         
     if (exists == False) or (action == "y"):
         input_file = f"{folder}/{file}"
-        output_file = f"{folder}/{file[:-8]}_complexity.parquet" 
+        output_file = f"{folder}/{file[:-8]}_complexity.parquet"  
+        
+        typo_dataset = "./data/Mistake_to_Meaning.csv"
         
         con.execute(f"""
         COPY (
+            WITH TypoData AS (SELECT list(lower(error)) AS typo_list FROM read_csv_auto('{typo_dataset}') WHERE length(error) >= 3 AND lower(error) NOT IN ('sin', 'cos', 'tan', 'cot', 'sec', 'csc', 'log', 'lim', 'max', 'min', 'sum', 'deg', 'rad', 'def', 'int', 'var', 'for', 'let', 'end', 'out', 'set'))
             SELECT 
-                *,
-                len(regexp_extract_all({col}, '\\$\\$?[^\\$]{{5,}}\\$\\$?')) AS SimpleFormulaCount,
-                len(regexp_extract_all({col}, '\\$\\$?[^\\$]{{10,}}\\$\\$?')) AS LongFormulaCount
-            FROM '{input_file}'
+                p.*,
+                len(regexp_extract_all(p.{col}, '\\$\\$?[^\\$]+\\$\\$?')) AS TotalFormulaCount,
+                len(regexp_extract_all(p.{col}, '\\$\\$?[^\\$]{{10,}}\\$\\$?')) AS LongFormulaCount,
+                length(array_to_string(regexp_extract_all(p.{col}, '\\$\\$?[^\\$]+\\$\\$?'), '')) AS TotalFormulaLength,
+
+                length(regexp_replace(p.{col}, '<[^>]+>', '', 'g')) AS CharCount,                
+                len(regexp_extract_all(regexp_replace(p.{col}, '<[^>]+>', '', 'g'), '\\w+')) AS WordCount,
+                
+                (length(p.{col}) - length(replace(p.{col}, '—', ''))) AS EmDashCount,
+                (length(p.{col}) - length(replace(p.{col}, '*', ''))) AS AsteriskCount,
+                
+                len(regexp_extract_all(p.{col}, '(?i)delve')) AS DelveCount,
+                len(regexp_extract_all(p.{col}, '(?i)intricate')) AS IntricateCount,
+                len(regexp_extract_all(p.{col}, '(?i)underscore')) AS UnderscoreCount,
+                
+                len(list_intersect(regexp_extract_all(lower(regexp_replace(p.{col}, '<[^>]+>|<code>.*?</code>', '', 'g')), '\\w+'), (SELECT typo_list FROM TypoData))) AS TypoCount
+                
+            FROM '{input_file}' AS p
         ) TO '{output_file}' (FORMAT PARQUET);
         """)

@@ -18,7 +18,7 @@ def eventSelector():
         return selected_map
 
 
-def plotQuestionsAnswers():
+def plotDatapoint(column):
     if "path" not in st.session_state:
         st.session_state.path = ""
     if "col" not in st.session_state:
@@ -45,8 +45,8 @@ def plotQuestionsAnswers():
                         st.warning("Query is empty")
                     else:
                         df["PostDate"] = pd.to_datetime(df["PostDate"])
-                        df[f"{st.session_state.rolling} day trend"] = df["PostCount"].rolling(window=st.session_state.rolling, min_periods=1).mean()
-                        fig = px.line(df, x="PostDate", y=["PostCount", f"{st.session_state.rolling} day trend"])
+                        df[f"{st.session_state.rolling} day trend"] = df[column].rolling(window=st.session_state.rolling, min_periods=1).mean()
+                        fig = px.line(df, x="PostDate", y=[column, f"{st.session_state.rolling} day trend"])
                         fig.data[1].line.color = 'red'
                         fig.data[1].line.width = 3
                         fig.update_xaxes(range=[pd.to_datetime(start_date), pd.to_datetime(end_date)])
@@ -154,11 +154,54 @@ def plotsSite():
     filepath = os.path.join(st.session_state.path, st.session_state.file)
     queries = [f"SELECT CAST(CreationDate AS DATE) AS PostDate, COUNT(*) AS PostCount FROM '{filepath}' WHERE PostTypeId = 1 GROUP BY PostDate ORDER BY PostDate",
                f"SELECT CAST(CreationDate AS DATE) AS PostDate, COUNT(*) AS PostCount FROM '{filepath}' WHERE PostTypeId = 2 GROUP BY PostDate ORDER BY PostDate",
-               f"WITH TopTags AS (SELECT tag FROM (SELECT unnest(string_split(trim(Tags, '<>'), '><')) AS tag FROM '{filepath}' WHERE PostTypeId = 1 AND Tags IS NOT NULL) GROUP BY tag ORDER BY COUNT(*) DESC LIMIT 10),MonthlyTags AS (SELECT date_trunc('month', CreationDate) AS PostMonth,unnest(string_split(trim(Tags, '<>'), '><')) AS tag FROM '{filepath}'WHERE PostTypeId = 1 AND Tags IS NOT NULL)SELECT CAST(PostMonth AS DATE) AS PostDate, tag AS TagName,COUNT(*) AS TagCount FROM MonthlyTags WHERE tag IN (SELECT tag FROM TopTags) GROUP BY PostDate, TagName ORDER BY PostDate"
+               f"WITH TopTags AS (SELECT tag FROM (SELECT unnest(string_split(trim(Tags, '<>'), '><')) AS tag FROM '{filepath}' WHERE PostTypeId = 1 AND Tags IS NOT NULL) GROUP BY tag ORDER BY COUNT(*) DESC LIMIT 10),MonthlyTags AS (SELECT date_trunc('month', CreationDate) AS PostMonth,unnest(string_split(trim(Tags, '<>'), '><')) AS tag FROM '{filepath}'WHERE PostTypeId = 1 AND Tags IS NOT NULL)SELECT CAST(PostMonth AS DATE) AS PostDate, tag AS TagName,COUNT(*) AS TagCount FROM MonthlyTags WHERE tag IN (SELECT tag FROM TopTags) GROUP BY PostDate, TagName ORDER BY PostDate",
+               f"SELECT CAST(CreationDate AS DATE) AS PostDate, AVG(WordCount) AS AverageWordCount FROM '{filepath}' WHERE PostTypeId = 1 GROUP BY PostDate ORDER BY PostDate",
+               f"SELECT CAST(CreationDate AS DATE) AS PostDate, AVG(WordCount) AS AverageWordCount FROM '{filepath}' WHERE PostTypeId = 2 GROUP BY PostDate ORDER BY PostDate",
+               f"SELECT CAST(CreationDate AS DATE) AS PostDate, AVG(EmDashCount) AS AverageEmDashCount FROM '{filepath}' WHERE PostTypeId = 1 GROUP BY PostDate ORDER BY PostDate",
+               f"SELECT CAST(CreationDate AS DATE) AS PostDate, AVG(EmDashCount) AS AverageEmDashCount FROM '{filepath}' WHERE PostTypeId = 2 GROUP BY PostDate ORDER BY PostDate",
+               f"SELECT CAST(CreationDate AS DATE) AS PostDate, AVG(AsteriskCount) AS AverageAsteriskCount FROM '{filepath}' WHERE PostTypeId = 1 GROUP BY PostDate ORDER BY PostDate",
+               f"SELECT CAST(CreationDate AS DATE) AS PostDate, AVG(AsteriskCount) AS AverageAsteriskCount FROM '{filepath}' WHERE PostTypeId = 2 GROUP BY PostDate ORDER BY PostDate",
+               
+               f"SELECT CAST(CreationDate AS DATE) AS PostDate, AVG(DelveCount) AS AverageDelveCount FROM '{filepath}' WHERE PostTypeId = 1 GROUP BY PostDate ORDER BY PostDate",
+               f"SELECT CAST(CreationDate AS DATE) AS PostDate, AVG(DelveCount) AS AverageDelveCount FROM '{filepath}' WHERE PostTypeId = 2 GROUP BY PostDate ORDER BY PostDate",
+               f"SELECT CAST(CreationDate AS DATE) AS PostDate, AVG(IntricateCount) AS AverageIntricateCount FROM '{filepath}' WHERE PostTypeId = 1 GROUP BY PostDate ORDER BY PostDate",
+               f"SELECT CAST(CreationDate AS DATE) AS PostDate, AVG(IntricateCount) AS AverageIntricateCount FROM '{filepath}' WHERE PostTypeId = 2 GROUP BY PostDate ORDER BY PostDate",
+               f"SELECT CAST(CreationDate AS DATE) AS PostDate, AVG(UnderscoreCount) AS AverageUnderscoreCount FROM '{filepath}' WHERE PostTypeId = 1 GROUP BY PostDate ORDER BY PostDate",
+               f"SELECT CAST(CreationDate AS DATE) AS PostDate, AVG(UnderscoreCount) AS AverageUnderscoreCount FROM '{filepath}' WHERE PostTypeId = 2 GROUP BY PostDate ORDER BY PostDate",
+               
+               f"SELECT CAST(CreationDate AS DATE) AS PostDate, AVG(DelveCount + IntricateCount + UnderscoreCount) AS AverageKeyLLMWordCount FROM '{filepath}' WHERE PostTypeId = 1 GROUP BY PostDate ORDER BY PostDate",
+               f"SELECT CAST(CreationDate AS DATE) AS PostDate, AVG(DelveCount + IntricateCount + UnderscoreCount) AS AverageKeyLLMWordCount FROM '{filepath}' WHERE PostTypeId = 2 GROUP BY PostDate ORDER BY PostDate",
+               
+               f"SELECT CAST(CreationDate AS DATE) AS PostDate, AVG(TypoCount) AS AverageTypoCount FROM '{filepath}' WHERE PostTypeId = 1 GROUP BY PostDate ORDER BY PostDate",
+               f"SELECT CAST(CreationDate AS DATE) AS PostDate, AVG(TypoCount) AS AverageTypoCount FROM '{filepath}' WHERE PostTypeId = 2 GROUP BY PostDate ORDER BY PostDate",
+               f"SELECT CAST(CreationDate AS DATE) AS PostDate, AVG(TypoCount) AS AverageTypoCount FROM '{filepath}' GROUP BY PostDate ORDER BY PostDate",
+               f"SELECT CAST(CreationDate AS DATE) AS PostDate, (SUM(TypoCount) * 1000.0) / NULLIF(SUM(WordCount), 0) AS NormalizedTypoRate FROM '{filepath}' WHERE PostTypeId = 1 GROUP BY PostDate ORDER BY PostDate",
+               f"SELECT CAST(CreationDate AS DATE) AS PostDate, (SUM(TypoCount) * 1000.0) / NULLIF(SUM(WordCount), 0) AS NormalizedTypoRate FROM '{filepath}' WHERE PostTypeId = 2 GROUP BY PostDate ORDER BY PostDate",
+               f"SELECT CAST(CreationDate AS DATE) AS PostDate, (SUM(TypoCount) * 1000.0) / NULLIF(SUM(WordCount), 0) AS NormalizedTypoRate FROM '{filepath}' GROUP BY PostDate ORDER BY PostDate",
                ]
     plots = [f"Question count over time",
              f"Answer count over time",
-             f"Top {st.session_state.tag_count} tags usage over time"
+             f"Top {st.session_state.tag_count} tags usage over time",
+             f"Average Word count of Questions over time",
+             f"Average Word count of Answers over time",
+             f"Average EM dash count of Questions over time",
+             f"Average EM dash count of Answers over time",
+             f"Average Asterisc count of Questions over time",
+             f"Average Asterisc count of Answers over time",
+             f"Average delve count of Questions over time",
+             f"Average delve count of Answers over time",
+             f"Average intricate count of Questions over time",
+             f"Average intricate count of Answers over time",
+             f"Average underscore count of Questions over time",
+             f"Average underscore count of Answers over time",
+             f"Average combined LLM keywords count of Questions over time",
+             f"Average combined LLM keywords count of Answers over time",
+             f"Average typo count of Questions over time",
+             f"Average typo count of Answers over time",
+             f"Average typo count over time",
+             f"Normalized typo count of Questions over time",
+             f"Normalized typo count of Answers over time",
+             f"Normalized typo count over time",
                 ]
     selected_plot = selectboxWrapper("Select a predefined plot:", plots, "")
     st.session_state.plot_index = plots.index(selected_plot)
@@ -166,7 +209,25 @@ def plotsSite():
     st.session_state.query = queries[st.session_state.plot_index]
 
     if(st.session_state.plot_index == 0 or st.session_state.plot_index == 1):
-        plotQuestionsAnswers()
+        plotDatapoint("PostCount")
     elif(st.session_state.plot_index == 2):
         plotTags()
+    elif(st.session_state.plot_index == 3 or st.session_state.plot_index == 4):
+        plotDatapoint("AverageWordCount")
+    elif(st.session_state.plot_index == 5 or st.session_state.plot_index == 6):
+        plotDatapoint("AverageEmDashCount")
+    elif(st.session_state.plot_index == 7 or st.session_state.plot_index == 8):
+        plotDatapoint("AverageAsteriskCount")
+    elif(st.session_state.plot_index == 9 or st.session_state.plot_index == 10):
+        plotDatapoint("AverageDelveCount")
+    elif(st.session_state.plot_index == 11 or st.session_state.plot_index == 12):
+        plotDatapoint("AverageIntricateCount")
+    elif(st.session_state.plot_index == 13 or st.session_state.plot_index == 14):
+        plotDatapoint("AverageUnderscoreCount")
+    elif(st.session_state.plot_index == 15 or st.session_state.plot_index == 16):
+        plotDatapoint("AverageKeyLLMWordCount")
+    elif(st.session_state.plot_index == 17 or st.session_state.plot_index == 18 or st.session_state.plot_index == 19):
+        plotDatapoint("AverageTypoCount")
+    elif(st.session_state.plot_index == 20 or st.session_state.plot_index == 21 or st.session_state.plot_index == 22):
+        plotDatapoint("NormalizedTypoRate")
         
