@@ -1,6 +1,4 @@
 import streamlit as st
-import tkinter as tk
-from tkinter import filedialog
 import os
 from shared.db import executeCustomQueryDF
 from frontend.selector import selectFolder, selectboxWrapper
@@ -8,7 +6,6 @@ import datetime
 import plotly.express as px
 from shared.defines import IMPORTANTDATES
 import pandas as pd
-
 
 def eventSelector():
     with st.expander("Select release dates to be included in the plot", expanded=False):
@@ -118,6 +115,52 @@ def plotTags():
                 st.error(f"Something went wrong: {e}")
 
 
+
+def scatterPlot():
+    if "path" not in st.session_state:
+        st.session_state.path = ""
+    if "col" not in st.session_state:
+        st.session_state.col = ""
+    if "query" not in st.session_state:
+        st.session_state.query = ""
+    if "file" not in st.session_state:
+        st.session_state.file = "Posts.parquet"
+    if "dates" not in st.session_state:
+        st.session_state.dates = True
+    if "xaxis" not in st.session_state:
+        st.session_state.xaxis = ""
+    if "yaxis" not in st.session_state:
+        st.session_state.yaxis = ""
+
+
+    file_path = os.path.join(st.session_state.path, st.session_state.file)
+    cols = executeCustomQueryDF(f"DESCRIBE SELECT * FROM '{file_path}'")['column_name']
+    st.session_state.xaxis = selectboxWrapper("Select the column for the x-axis", cols, "Score")
+    st.session_state.yaxis = selectboxWrapper("Select the column for the y-axis", cols, "ViewCount")
+    df = executeCustomQueryDF(f"SELECT {st.session_state.xaxis}, {st.session_state.yaxis} FROM '{file_path}' USING SAMPLE 10000")
+    
+    try:
+        fig = px.scatter(
+        df,
+        x=st.session_state.xaxis,
+        y=st.session_state.yaxis,
+        title=f"Correlation of {st.session_state.xaxis} and {st.session_state.yaxis}",
+        opacity=0.4,
+        hover_data=[st.session_state.xaxis, st.session_state.yaxis],
+        trendline="ols", 
+        trendline_color_override="red"
+        )
+        results = px.get_trendline_results(fig)
+        model = results.px_fit_results.iloc[0]
+        slope = round(model.params[1], 4)
+        r_squared = round(model.rsquared, 4)
+        fig.data[1].name = f"Slope: {slope}, R^2: {r_squared})"
+        fig.data[1].showlegend = True
+        st.plotly_chart(fig, width='stretch')
+
+    except Exception as e:
+        st.error(f"Something went wrong: {e}")
+
 def plotsSite():
     if "path" not in st.session_state:
         st.session_state.path = ""
@@ -178,6 +221,7 @@ def plotsSite():
                f"SELECT CAST(CreationDate AS DATE) AS PostDate, (SUM(TypoCount) * 1000.0) / NULLIF(SUM(WordCount), 0) AS NormalizedTypoRate FROM '{filepath}' WHERE PostTypeId = 1 GROUP BY PostDate ORDER BY PostDate",
                f"SELECT CAST(CreationDate AS DATE) AS PostDate, (SUM(TypoCount) * 1000.0) / NULLIF(SUM(WordCount), 0) AS NormalizedTypoRate FROM '{filepath}' WHERE PostTypeId = 2 GROUP BY PostDate ORDER BY PostDate",
                f"SELECT CAST(CreationDate AS DATE) AS PostDate, (SUM(TypoCount) * 1000.0) / NULLIF(SUM(WordCount), 0) AS NormalizedTypoRate FROM '{filepath}' GROUP BY PostDate ORDER BY PostDate",
+               f"PLACEHOLDER"
                ]
     plots = [f"Question count over time",
              f"Answer count over time",
@@ -202,6 +246,7 @@ def plotsSite():
              f"Normalized typo count of Questions over time",
              f"Normalized typo count of Answers over time",
              f"Normalized typo count over time",
+             f"Scatter plot",
                 ]
     selected_plot = selectboxWrapper("Select a predefined plot:", plots, "")
     st.session_state.plot_index = plots.index(selected_plot)
@@ -230,4 +275,6 @@ def plotsSite():
         plotDatapoint("AverageTypoCount")
     elif(st.session_state.plot_index == 20 or st.session_state.plot_index == 21 or st.session_state.plot_index == 22):
         plotDatapoint("NormalizedTypoRate")
+    elif(st.session_state.plot_index == 23):
+        scatterPlot()
         
