@@ -52,6 +52,7 @@ streamlit run gui.py
 
 
 The `main.py` file start the command line interface containing a menu from which all necessary functions can be called.
+The command line interface is outdated and does not support most of the features at the current time, and might be removed in the future since the GUI works better than initially expected.
 ```bash
 python main.py
 ```
